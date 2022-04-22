@@ -12,10 +12,12 @@ For IPMI over LAN, IPMI 1.5 and RMCP is supported.
 IPMI 2.0 / RMCP+ is not supported yet.
 
 :::info
+
 Instead of creating many enum and type to provide more contextual and typed
 value. This crate is sticking with raw values (like `u8`). The reason behind
 it is mostly to support unconventional usages like pan-testing / security
 research. In the future this may change, or being offered as a separate feature
+
 :::
 
 
@@ -51,8 +53,12 @@ if let RmcpContent::Ipmi15(ipmi_pkt) = rmcp_message.data {
     
     /**
      * Some Ipmi command that's included in this crate can be decoded directly
-     * to a typed value. Th
+     * to a typed value.
      */
+    if let Some(GetChannelAuthCap::Request(req)) = 
+            GetChannelAuthCap::from_message(&ipmi_pkt.data) {
+        assert_eq!(req.channel_number, 0xe);
+    }
     
     /* to decode any request message, and deal with the raw bytes */
     if let IpmiData::Request(rq_bytes) = ipmi_pkt.data.data {
@@ -68,9 +74,11 @@ if let RmcpContent::Ipmi15(ipmi_pkt) = rmcp_message.data {
 
 ### Serialize
 :::warning
+
 :warning: Unlike `copy_from_slice` in rust, `write_to_slice` in this crate 
 can write to slice with size greater or equals to the content it's going
 to write. use `foo.size()` to get the size it will be written.
+
 :::
 ```rust
 /* continue from previous code block */
