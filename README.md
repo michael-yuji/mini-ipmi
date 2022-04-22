@@ -25,6 +25,8 @@ The following example to to decode the RMCP message and validate the message
 is not malformed. Allowing non-strict decoding can be useful for some usages
 like security research.
 
+Decoding to typed IPMI request/response is also supported
+
 ### Deserialize
 ```rust
 let·bytes·=·[
@@ -47,10 +49,17 @@ if let RmcpContent::Ipmi15(ipmi_pkt) = rmcp_message.data {
     /* down field `data` for IPMI message header */
     assert_eq!(ipmi_pkt.data.netfn, 0x06u8);
     
+    /**
+     * Some Ipmi command that's included in this crate can be decoded directly
+     * to a typed value. Th
+     */
+    
+    /* to decode any request message, and deal with the raw bytes */
     if let IpmiData::Request(rq_bytes) = ipmi_pkt.data.data {
         todo!();
     }
     
+     /* to decode any response message, and deal with the raw bytes */   
     if let IpmiData::Response(rs_code, rs_bytes) = ipmi_pkt.data.data {
         panic!("The byte array in this example contais req data, not res");
     }
