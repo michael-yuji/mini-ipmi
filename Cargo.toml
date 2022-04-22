@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+  "macros",
+  "mini_ipmi"
+]
