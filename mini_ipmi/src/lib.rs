@@ -29,6 +29,23 @@ mod tests {
     }
 
     #[test]
+    fn test_ipmi_get_auth_capabilities_generic_req() {
+        let req_bytes = [0x06, 0x00, 0xff, 0x07, 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x09,0x20,0x18,0xc8,0x81,0x04,0x38,0x0e,0x04,0x31];
+        let decoded = RmcpMessage::from_bytes(&req_bytes, true);
+        assert_eq!(decoded.is_ok(), true);
+        let unwrapped = decoded.unwrap();
+        if let RmcpContent::Ipmi15(packet) = &unwrapped.data {
+            if let Some(GetChannelAuthCap::Request(req)) = GetChannelAuthCap::from_message(&packet.data) {
+                assert_eq!(req.channel_number, 0xe);
+            } else {
+                panic!("Should decode as GetChannelAuthCap::Request")
+            }
+        } else {
+            panic!("Should decode as IPMI 1.5 packet")
+        }
+    }
+
+    #[test]
     fn test_ipmi_get_auth_capabilities_req() {
         let req_bytes = [0x06, 0x00, 0xff, 0x07, 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x09,0x20,0x18,0xc8,0x81,0x04,0x38,0x0e,0x04,0x31];
         let mut out = [0u8; 23];
