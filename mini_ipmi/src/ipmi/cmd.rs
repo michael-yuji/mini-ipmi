@@ -14,7 +14,7 @@ pub trait IpmiCommand: core::marker::Sized {
 macro_rules! ipmi_cmd {
     ($netfn:expr, $cmd:expr, $name:ident, $req:ty, $res:ty) => {
         #[derive(Debug, Eq, PartialEq)]
-        enum $name {
+        pub enum $name {
             Request($req),
             Response(u8, $res)
         }
